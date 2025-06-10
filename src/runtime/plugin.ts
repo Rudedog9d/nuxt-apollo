@@ -6,6 +6,7 @@ import { ApolloClients, provideApolloClients } from '@vue/apollo-composable'
 import { ApolloClient, ApolloLink, createHttpLink, InMemoryCache, split } from '@apollo/client/core'
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions'
 import { setContext } from '@apollo/client/link/context'
+import type { ClientOptions } from 'graphql-ws'
 import type { ClientConfig, ErrorResponse } from '../types'
 import createRestartableClient from './ws'
 import { useApollo } from './composables'
@@ -76,11 +77,23 @@ export default defineNuxtPlugin((nuxtApp) => {
         ...clientConfig.wsLinkOptions,
         url: clientConfig.wsEndpoint,
         connectionParams: async () => {
+          let connectionParams: ClientOptions['connectionParams'] = clientConfig.wsLinkOptions?.connectionParams || {}
+
+          // if connection params is a function, call it
+          if (typeof connectionParams === 'function') {
+            connectionParams = await connectionParams()
+          }
+
           const auth = await getAuth()
+          if (!auth) { return connectionParams }
 
-          if (!auth) { return }
+          const headers = connectionParams?.headers || {}
 
-          return { headers: { [clientConfig.authHeader!]: auth } }
+          // merge any existing connection params with the auth header
+          return {
+            headers: { [clientConfig.authHeader!]: auth, ...headers },
+            ...connectionParams
+          }
         }
       })
 
