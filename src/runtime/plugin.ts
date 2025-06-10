@@ -87,13 +87,14 @@ export default defineNuxtPlugin((nuxtApp) => {
           const auth = await getAuth()
           if (!auth) { return connectionParams }
 
-          const headers = connectionParams?.headers || {}
-
-          // merge any existing connection params with the auth header
-          return {
-            headers: { [clientConfig.authHeader!]: auth, ...headers },
-            ...connectionParams
+          // merge connection headers with the auth header
+          const headers = {
+            [clientConfig.authHeader!]: auth,
+            ...(connectionParams?.headers || {})
           }
+
+          // merge existing connection params with headers
+          return { ...connectionParams, headers }
         }
       })
 
