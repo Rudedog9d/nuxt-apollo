@@ -1,6 +1,6 @@
 {
   "name": "@rudedog9d/nuxt-apollo",
-  "version": "5.0.0-alpha.19",
+  "version": "5.0.0-alpha.20",
   "license": "MIT",
   "repository": "https://github.com/nuxt-modules/apollo-module",
   "homepage": "https://apollo.nuxtjs.org",
@@ -31,7 +31,7 @@
     "release": "standard-version --prerelease alpha && git push --follow-tags && pnpm publish --tag next"
   },
   "dependencies": {
-    "@apollo/client": "^3.9.5",
+    "@apollo/client": "^3.11.0",
     "@nuxt/kit": "^3.10.3",
     "@rollup/plugin-graphql": "^2.0.4",
     "@vue/apollo-composable": "^4.0.1",

@@ -3,7 +3,9 @@ import { onError } from '@apollo/client/link/error'
 import { getMainDefinition } from '@apollo/client/utilities'
 import { createApolloProvider } from '@vue/apollo-option'
 import { ApolloClients, provideApolloClients } from '@vue/apollo-composable'
-import { ApolloClient, ApolloLink, createHttpLink, InMemoryCache, split } from '@apollo/client/core'
+import { ApolloClient, InMemoryCache } from '@apollo/client/core'
+import { ApolloLink, split } from '@apollo/client/link/core'
+import { createHttpLink } from '@apollo/client/link/http'
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions'
 import { setContext } from '@apollo/client/link/context'
 import type { ClientOptions } from 'graphql-ws'
@@ -137,7 +139,10 @@ export default defineNuxtPlugin((nuxtApp) => {
       ...(process.server
         ? { ssrMode: true }
         : { ssrForceFetchDelay: 100 }),
-      connectToDevTools: clientConfig.connectToDevTools || false,
+      devtools: {
+        enabled: clientConfig.connectToDevTools || false,
+        name: key
+      },
       defaultOptions: clientConfig?.defaultOptions
     })
 
